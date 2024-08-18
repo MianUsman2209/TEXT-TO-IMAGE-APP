@@ -1,17 +1,15 @@
 import streamlit as st
-import torch
 from diffusers import DiffusionPipeline
 
 # Streamlit setup
 st.title("Text-to-Image Generator")
 st.write("Generate images from text prompts using Stable Diffusion.")
 
-# Load the diffusion model
+# Load the diffusion model without explicitly using torch
 @st.cache_resource
 def load_model():
-    device = "cuda" if torch.cuda.is_available() else "cpu"
     generator = DiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5")
-    generator.to(device)
+    # Automatically uses CPU if CUDA is unavailable, no need to check torch
     return generator
 
 generator = load_model()
@@ -26,4 +24,5 @@ if st.button("Generate Image"):
 
         # Display the image
         st.image(image, caption=f"Generated Image for: {prompt}", use_column_width=True)
+
 
