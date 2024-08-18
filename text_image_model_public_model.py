@@ -1,3 +1,4 @@
+from diffusers import DiffusionPipeline
 import streamlit as st
 from diffusers import DiffusionPipeline
 
@@ -5,11 +6,10 @@ from diffusers import DiffusionPipeline
 st.title("Text-to-Image Generator")
 st.write("Generate images from text prompts using Stable Diffusion.")
 
-# Load the diffusion model without explicitly using torch
 @st.cache_resource
 def load_model():
     generator = DiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5")
-    # Automatically uses CPU if CUDA is unavailable, no need to check torch
+    generator.to("cuda" if torch.cuda.is_available() else "cpu")
     return generator
 
 generator = load_model()
